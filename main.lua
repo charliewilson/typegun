@@ -5,7 +5,11 @@ Object = require("lib/classic")
 Scenes = require("scenes/s_all")
 
 GameState = {
-	currentSpeed = 0.1,
+	currentSpeed = 0.2,
+	timeBetweenWords = 300,
+	timeToNextWord = 0,
+	enemies = {},
+	activeEnemy = 0,
 }
 
 function love.load()
