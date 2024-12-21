@@ -13,16 +13,17 @@ end
 
 function s_gameplay:leave(next, ...)
 	-- cleanup
-	--love.graphics.setColor(255, 255, 255, 1)
 end
 
 function s_gameplay:draw()
-	love.graphics.print("TTNW: " .. GameState.timeToNextWord)
-
 	ec:drawTick()
+	love.graphics.print("Score: " .. GameState.score)
 
-	for k, v in pairs(GameState.enemies) do
-		love.graphics.print(k .. ": " .. v.word .. " (active: " .. (v.active and "yes" or "no"), 0, (12 * (k + 1)))
+	if Debug then
+		love.graphics.print("TTNW: " .. GameState.timeToNextWord)
+		for k, v in pairs(GameState.enemies) do
+			love.graphics.print(k .. ": " .. v.word .. " (active: " .. (v.active and "yes" or "no"), 0, (12 * (k + 1)))
+		end
 	end
 end
 

@@ -24,4 +24,9 @@ function helpers:dump(o)
 	end
 end
 
+function helpers:setColor(colourName)
+	local c = Colours[colourName]
+	love.graphics.setColor(love.math.colorFromBytes(c[1], c[2], c[3]))
+end
+
 return helpers

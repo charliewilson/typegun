@@ -14,6 +14,10 @@ function EnemyController:create()
 	currentKey = currentKey + 1
 end
 
+function EnemyController:getActive()
+	return GameState.enemies[GameState.activeEnemy]
+end
+
 function EnemyController:refreshActive()
 	local toActivate = nil
 
@@ -25,12 +29,37 @@ function EnemyController:refreshActive()
 
 	if toActivate ~= nil then
 		GameState.enemies[toActivate]:activate()
+		GameState.activeEnemy = toActivate
 	end
 end
 
 function EnemyController:handleKey(key)
-	-- something
-	keyPressed = key
+	local ae = EnemyController:getActive()
+
+	-- if the key matches the next character in Enemy.characters
+	if ae.characters[ae.attemptCursor] == key then
+		--append to attemptCharacters
+		table.insert(ae.attemptCharacters, ae.characters[ae.attemptCursor])
+
+		if ae.word == table.concat(ae.attemptCharacters) then
+			--if it's the last character (check if characters and attemptCharacters are the same), handle the end, if not,
+			ae:markComplete()
+			GameState.score = GameState.score + 1
+			GameState.currentSpeed = 0.2 + (0.001 * GameState.score)
+			--GameState.timeBetweenWords = (GameState.timeBetweenWords >= 100) and (GameState.timeBetweenWords - 10)
+			--or 100
+			EnemyController:refreshActive()
+		else
+			--add to the attemptCharacters and increase attemptCursor
+			ae.attemptCursor = ae.attemptCursor + 1
+		end
+	else
+		-- reset
+		ae.attemptCursor = 1
+		ae.attemptCharacters = {}
+	end
+
+	ae.attempt = table.concat(EnemyController:getActive().attemptCharacters)
 end
 
 function EnemyController:tick()
@@ -43,8 +72,12 @@ function EnemyController:tick()
 
 	for k in pairs(GameState.enemies) do
 		if GameState.enemies[k].offScreen == true then
-			table.remove(GameState.enemies, k)
-			EnemyController:refreshActive()
+			if GameState.enemies[k].completed == false then
+				SceneManager:enter(Scenes.gameover)
+			else
+				table.remove(GameState.enemies, k)
+				EnemyController:refreshActive()
+			end
 		else
 			GameState.enemies[k]:update()
 		end
@@ -55,13 +88,4 @@ function EnemyController:drawTick()
 	for k in pairs(GameState.enemies) do
 		GameState.enemies[k]:draw()
 	end
-	love.graphics.print("Key: " .. keyPressed, 0, 6)
-end
-
-function EnemyController:splitWord(word)
-	local t = {}
-	for str in string.gmatch(word, "([^%s]+)") do
-		table.insert(t, str)
-	end
-	return t
 end

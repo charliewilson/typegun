@@ -2,6 +2,16 @@ local s_menu = {}
 
 function s_menu:enter(previous, ...)
 	-- setup
+	if previous == Scenes.gameover then
+		GameState = {
+			score = 0,
+			currentSpeed = 0.2,
+			timeBetweenWords = 100,
+			timeToNextWord = 0,
+			enemies = {},
+			activeEnemy = 0,
+		}
+	end
 end
 
 function s_menu:update(dt)
