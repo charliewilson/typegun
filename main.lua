@@ -7,6 +7,7 @@ Object = require("lib/classic")
 Scenes = require("scenes/s_all")
 
 Colours = require("res/r_colours")
+Fonts = require("res/r_fonts")
 H = require("res/r_helpers")
 
 GameState = {
@@ -21,6 +22,8 @@ GameState = {
 function love.load()
 	Width = 402
 	Height = 874
+
+	love.graphics.setFont(Fonts.words)
 
 	SceneManager:hook()
 	SceneManager:enter(Scenes.menu)
